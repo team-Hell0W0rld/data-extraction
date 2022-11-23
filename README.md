@@ -9,8 +9,8 @@ Create an application that will do below
 + Have a document viewer embedded into the application.
 + Have a dynamic webform that can be extended for any number of fields. 
 + The webform should be able to take a key and value for each element. 
-+ Have a side-by-side view of document and the dynamic form <font color = red> * Key Feature </font>
-+ Have an option to snip and extract the key and value fields from the document page currently being viewed <font color = red> * Key Feature </font>
++ Have a side-by-side view of document and the dynamic form [***Key Feature***]
++ Have an option to snip and extract the key and value fields from the document page currently being viewed [***Key Feature***]
 + The form should be a clickable form, and on click of the extracted data in the form, the position from where the data was extracted should be highlighted in the document.
 + Have ability to traverse through multiple pages in the document, and change the form data according to the data being viewed. 
 
@@ -32,4 +32,4 @@ Create an application that will do below
     + example : <PR team1>
 + Create a file called TestMe.md and mention  how to start the app and if any dependencies have to be downloaded to run the app locally
 
-<font color = red> *** Try not to use firebase or any internet provided services for creating or running the apps </font>
+***Try not to use firebase or any internet provided services for creating or running the apps***
