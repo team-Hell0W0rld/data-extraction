@@ -1,44 +1,66 @@
-import { useState, useEffect, useRef } from "react";
-import Cropper from "cropperjs";
-import styles from "./TextExtraction.module.css";
+import React, { useEffect, useState, useRef } from "react";
 import Tesseract from "tesseract.js";
 
-function TextExtraction() {
-  const [imagePath, setImagePath] = useState("");
+import ReactCrop, { centerCrop, makeAspectCrop } from "react-image-crop";
+import { canvasPreview } from "./canvasPreview";
+import { useDebounceEffect } from "./useDebounceEffect";
+
+import "react-image-crop/dist/ReactCrop.css";
+
+export default function TextExtractionFinal() {
+  const [imgSrc, setImgSrc] = useState("");
+  const previewCanvasRef = useRef(null);
+  const imgRef = useRef(null);
+  const [crop, setCrop] = useState();
+  const [completedCrop, setCompletedCrop] = useState();
+  const [scale, setScale] = useState(1);
   const [text, setText] = useState("");
-  const imgEl = useRef(null);
-  let stage;
 
-  // we can pass coordinates to tesseract
-  // just need to search for snipping tool
+  function onSelectFile(e) {
+    if (e.target.files && e.target.files.length > 0) {
+      setCrop(undefined); // Makes crop preview update between images.
+      const reader = new FileReader();
+      reader.addEventListener("load", () =>
+        setImgSrc(reader.result?.toString() || "")
+      );
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  }
 
-  useEffect(() => {
-    console.log(window.Jcrop);
-    if (!imagePath || imagePath.length === 0) return;
-    // stage = window.Jcrop.attach("target", {
-    //   shadeColor: "black",
-    //   multi: true,
-    // });
-    // stage.listen("crop.activate", function (widget, e) {
-    //   const pos = widget.pos;
-    //   console.log(pos.x, pos.y, pos.w, pos.h);
-    // });
-    // console.log(stage);
-    const cropper = new Cropper(imgEl.current);
-
-    let imgsrc = cropper.getCroppedCanvas({ width: "50px" }).toDataURL();
-    console.log(imgsrc);
-  }, [imagePath]);
-
-  const handleChange = (event) => {
-    setImagePath(URL.createObjectURL(event.target.files[0]));
-  };
+  useDebounceEffect(
+    async () => {
+      if (
+        completedCrop?.width &&
+        completedCrop?.height &&
+        imgRef.current &&
+        previewCanvasRef.current
+      ) {
+        // We use canvasPreview as it's much faster than imgPreview.
+        canvasPreview(
+          imgRef.current,
+          previewCanvasRef.current,
+          completedCrop,
+          scale
+        );
+      }
+    },
+    100,
+    [completedCrop, scale]
+  );
 
   const handleClick = () => {
-    // Tesseract.recognize(imagePath, "eng", {
-    //   logger: (m) => console.log(m),
-    // })
-    Tesseract.recognize(imagePath, "eng")
+    let can = previewCanvasRef.current;
+    let ctx = can.getContext("2d");
+
+    ctx.fillRect(50, 50, 50, 50);
+
+    var img = new Image();
+    img.src = can.toDataURL();
+    if (!completedCrop) return;
+    Tesseract.recognize(img, "eng", {
+      logger: (m) => console.log(m),
+    });
+    Tesseract.recognize(img, "eng")
       .catch((err) => {
         console.error(err);
       })
@@ -47,52 +69,55 @@ function TextExtraction() {
         console.log(text);
         setText(text);
       });
-    // window.Jcrop.destroy();
-    // stage.listen("crop.move", function (widget, e) {
-    //   const pos = widget.pos;
-    //   console.log(pos.x, pos.y, pos.w, pos.h);
-    // });
-    // console.log(imgEl);
-    // const cropper = new Cropper(imgEl.current, {
-    //   crop(event) {
-    //     console.log(event);
-    //     // console.log(event.detail.x);
-    //     // console.log(event.detail.y);
-    //     // console.log(event.detail.width);
-    //     // console.log(event.detail.height);
-    //   },
-    // });
-    // console.log(cropper);
-    // console.table(stage);
   };
 
   return (
     <div className="App">
-      <main className="App-main">
-        <h3>Actual imagePath uploaded</h3>
-
-        {/* <img
-          src={imagePath}
-          className={styles.target}
-          alt="logo"
-          id="target"
-          style={{ zIndex: 0 }}
-          ref={imgEl}
-        /> */}
-
-        <h3>Extracted text</h3>
-        <div className="text-box">
-          <p> {text} </p>
+      <div className="Crop-Controls">
+        <input type="file" accept="image/*" onChange={onSelectFile} />
+        <div>
+          <label htmlFor="scale-input">Scale: </label>
+          <input
+            id="scale-input"
+            type="number"
+            step="0.1"
+            value={scale}
+            disabled={!imgSrc}
+            onChange={(e) => setScale(Number(e.target.value))}
+          />
         </div>
-        <input type="file" onChange={handleChange} />
-        {/* <button onClick={handleClick} style={{ height: 50 }}> */}
+      </div>
+      {!!imgSrc && (
+        <ReactCrop
+          crop={crop}
+          onChange={(_, percentCrop) => setCrop(percentCrop)}
+          onComplete={(c) => setCompletedCrop(c)}
+        >
+          <img
+            alt="Crop me"
+            ref={imgRef}
+            src={imgSrc}
+            style={{ transform: `scale(${scale})` }}
+          />
+        </ReactCrop>
+      )}
+      <div>
+        {!!completedCrop && (
+          <canvas
+            ref={previewCanvasRef}
+            style={{
+              border: "1px solid black",
+              objectFit: "contain",
+              width: completedCrop.width,
+              height: completedCrop.height,
+            }}
+          />
+        )}
         <button onClick={handleClick} style={{ height: 50 }}>
           {" "}
           convert to text
         </button>
-      </main>
+      </div>
     </div>
   );
 }
-
-export default TextExtraction;
