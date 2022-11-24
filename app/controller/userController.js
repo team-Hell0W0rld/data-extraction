@@ -6,3 +6,8 @@ exports.getUser = async (req, res, next) => {
     user: req.user,
   });
 };
+
+exports.addDocument = async(req, res, next) => {
+  console.log(req.files);
+  res.status(200).json({message:"Document successfully added"});
+}

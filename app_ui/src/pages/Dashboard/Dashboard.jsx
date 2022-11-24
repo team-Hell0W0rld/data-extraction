@@ -4,6 +4,7 @@ import Modal from '../../components/Modal/Modal'
 import InputBox from '../../components/InputBox/InputBox'
 import Button from '../../components/Button/Button'
 import DropZone from '../../components/DropZone/DropZone'
+import Document from '../../components/Document/Document'
 
 import axios from '../../baseAxios';
 
@@ -13,7 +14,6 @@ const Dashboard = () => {
     const [user, changeUser] = useState({});
     const [document, setDocument]=useState([]);
     const [modal, displayModal] = useState(false);
-    const [format, setFormat] = useState('pdf')
 
     useEffect( () => {
         (async () =>{
@@ -30,25 +30,21 @@ const Dashboard = () => {
     };
 
     const saveFile = async () => {
-        console.log(document)
-        if(format==="pdf"){
-            // convert to pdf somehow
+        if(document[0].mimetype==="application/pdf"){
+            setDocument()
         }
 
         const data = new FormData();
         document.forEach(file => {
             data.append("images", file);
         });
-        console.log(data);
 
         try{
             const res = await axios.post('/api/users/addDocument', data);
             console.log(res);
         }catch(err){
             console.log(err);
-        }
-        
-        
+        }       
     }
 
     return (
@@ -57,28 +53,27 @@ const Dashboard = () => {
                 <h1>{`Welcome, ${user.name}`}</h1>
                 <button className={styles.logOut}>Log out</button>
             </div>
+
             <Modal modal={modal} hideModal={() => displayModal(false)}>
                 <div className={styles.modal}>
                     <div style={{display:"flex"}}>
                         <InputBox></InputBox>
-                        <select 
-                            onChange={(event) => {console.log(event.target.value);setFormat(event.target.value)}}
-                            value={format}
-                            style={{width:"75px", height:"40px", marginTop:"10px", padding:"5px"}}
-                        >
-                            <option value="pdf">PDF</option>
-                            <option value="jpeg">Images</option>
-                        </select>
                     </div>
-                    <DropZone type={format} addFiles={addFile}></DropZone>
+                    <DropZone addFiles={addFile}></DropZone>
                     <div style={{display:"flex"}}>
                         <Button style={{width:"150px", backgroundColor:"#00ab41"}} text="Save" onClick={saveFile}></Button>
                         <Button style={{width:"150px", backgroundColor:"#ff2c2c"}} text="Discard"  onClick={(e) => {displayModal(false)}}></Button>
                     </div>
                 </div>
             </Modal>
+            
             <div className={styles.documents}>
-                <button onClick={() => displayModal(true)}>Add document</button>
+                {/* {
+                    user.documents.map(el => {
+                        return <Document image={"image"} text={el.name}></Document>
+                    })
+                } */}
+                <Document image={"image"} text="Add new document." handleClick={e => displayModal(true)}></Document>
             </div>
         </div>
     )
