@@ -9,6 +9,19 @@ import axios from '../../baseAxios';
 
 import { useEffect, useState } from 'react';
 
+const readFileData = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        resolve(e.target.result);
+      };
+      reader.onerror = (err) => {
+        reject(err);
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
 const Dashboard = () => {
     const [user, changeUser] = useState({});
     const [document, setDocument]=useState([]);
@@ -29,10 +42,31 @@ const Dashboard = () => {
         console.log(documents)
     };
 
+    const convertPdfToImages = async (file) => {
+        const images = [];
+        const data = await readFileData(file);
+        const pdf = await PDFJS.getDocument(data).promise;
+        const canvas = document.createElement("canvas");
+        for (let i = 0; i < pdf.numPages; i++) {
+          const page = await pdf.getPage(i + 1);
+          const viewport = page.getViewport({ scale: 1 });
+          const context = canvas.getContext("2d");
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+          await page.render({ canvasContext: context, viewport: viewport }).promise;
+          images.append(canvas.toDataURL());
+        }
+        canvas.remove();
+        return images;
+      }
+      
+
     const saveFile = async () => {
         console.log(document)
         if(format==="pdf"){
             // convert to pdf somehow
+            const images = await convertPdfToImages(document);
+            setDocument(images);
         }
 
         const data = new FormData();
