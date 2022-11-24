@@ -26,10 +26,11 @@ Create an application that will do below
         - presentation (to place working demo videos and presentation explaining the architecture of the app)
 
 ### Steps to submit the code
-+ Fork the current repo
-+ Once changes are completed, create a Pull Request from ur fork
-+ Give the team name in the comment for Pull Request
-    + example : <PR team1>
++ Fork the repo to your team's git repo.
++ Create a branch with your team name.
++ You can make the changes to your branch locally.
 + Create a file called TestMe.md and mention  how to start the app and if any dependencies have to be downloaded to run the app locally
++ Do not push the branch to the STG repo till instructed.
++ At the end of the event, you can push your branch into the STG repo.
 
 ***Try not to use firebase or any internet provided services for creating or running the apps***
