@@ -4,17 +4,23 @@ import Tesseract from "tesseract.js";
 import ReactCrop, { centerCrop, makeAspectCrop } from "react-image-crop";
 import { canvasPreview } from "./canvasPreview";
 import { useDebounceEffect } from "./useDebounceEffect";
+import { DocActions } from "../../../store/slices/selectedDoc";
+import { useDispatch } from "react-redux";
 
 import "react-image-crop/dist/ReactCrop.css";
+import { alertClasses } from "@mui/material";
 
-export default function TextExtractionFinal() {
+export default function TextExtraction() {
   const [imgSrc, setImgSrc] = useState("");
   const previewCanvasRef = useRef(null);
   const imgRef = useRef(null);
   const [crop, setCrop] = useState();
   const [completedCrop, setCompletedCrop] = useState();
   const [scale, setScale] = useState(1);
-  const [text, setText] = useState("");
+  // const [text, setText] = useState("");
+  let key, value;
+
+  const dispatch = useDispatch();
 
   function onSelectFile(e) {
     if (e.target.files && e.target.files.length > 0) {
@@ -48,7 +54,28 @@ export default function TextExtractionFinal() {
     [completedCrop, scale]
   );
 
-  const handleClick = () => {
+  const addAsKey = () => {
+    const cb = (text) => {
+      // if (text)
+      console.log(text);
+      key = text;
+      console.log("text", key);
+    };
+
+    getCurrentText(cb);
+
+    // if (text) key = text;
+  };
+
+  const addAsValue = () => {
+    const cb = (text) => {
+      if (text) value = text;
+      console.log("value", value);
+    };
+    getCurrentText(cb);
+  };
+
+  const getCurrentText = (cb) => {
     let can = previewCanvasRef.current;
     let ctx = can.getContext("2d");
 
@@ -56,8 +83,12 @@ export default function TextExtractionFinal() {
 
     var img = new Image();
     img.src = can.toDataURL();
-    if (!completedCrop) return;
-    Tesseract.recognize(img, "eng", {
+    if (!completedCrop) {
+      cb();
+      return;
+    }
+    console.log(img);
+    Tesseract.recognize(img.src, "eng", {
       logger: (m) => console.log(m),
     });
     Tesseract.recognize(img, "eng")
@@ -65,10 +96,22 @@ export default function TextExtractionFinal() {
         console.error(err);
       })
       .then((result) => {
-        let text = result.data.text;
-        console.log(text);
-        setText(text);
+        console.log(result);
+        let newText = result.data.text;
+        console.log(newText);
+        // setText(newText);
+        cb(newText);
       });
+  };
+
+  const handleClick = () => {
+    console.log(key, value);
+    if (!value) {
+      alert("Please select the value");
+      return;
+    }
+    const newData = { title: key, value: value };
+    dispatch(DocActions.addData(newData));
   };
 
   return (
@@ -113,9 +156,17 @@ export default function TextExtractionFinal() {
             }}
           />
         )}
+        <button onClick={addAsKey} style={{ height: 50 }}>
+          {" "}
+          add as Key
+        </button>
+        <button onClick={addAsValue} style={{ height: 50 }}>
+          {" "}
+          add as Value
+        </button>
         <button onClick={handleClick} style={{ height: 50 }}>
           {" "}
-          convert to text
+          Save to DB
         </button>
       </div>
     </div>
