@@ -1,8 +1,13 @@
-
+import ImageEditor from '../../components/EditorComponenet/ImageEditor/ImageEditor';
+import DataViewer from '../../components/EditorComponenet/DataViewer/DataViewer';
+import styles from './Editor.module.css';
 
 const Editor = () => {
     return (
-        <h1>Editor Page</h1>
+        <div className={styles.Main}>
+            <ImageEditor />
+            <DataViewer />
+        </div>
     )
 }
 
