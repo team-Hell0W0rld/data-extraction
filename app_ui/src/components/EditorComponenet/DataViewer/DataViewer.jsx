@@ -1,11 +1,27 @@
-import styles from './DataViewer.module.css';
+import { useSelector } from "react-redux";
+import DataRow from "./DataRow/DataRow";
+import styles from "./DataViewer.module.css";
 
 const DataViewer = () => {
-    return (
-        <div className={styles.DataViewer}>
-            <h1>Data Viewer</h1>
-        </div>
-    )
-}
+  const dataList = useSelector((state) => state.selectedDoc.dataList);
+
+  return (
+    <div className={styles.DataViewer}>
+      <div className={styles.Header}>
+        <h1>Data Viewer</h1>
+      </div>
+      {dataList.map((data, ind) => {
+        return (
+          <DataRow
+            title={data.title}
+            value={data.value}
+            key={ind}
+            index={ind}
+          />
+        );
+      })}
+    </div>
+  );
+};
 
 export default DataViewer;
