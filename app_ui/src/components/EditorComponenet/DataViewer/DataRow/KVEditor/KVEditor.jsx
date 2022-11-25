@@ -12,6 +12,7 @@ const KVEditor = ({index}) => {
 
     const updateData = (title, value) => {
         const updatedData = {title, value};
+        console.log("updating data", updatedData)
         const newData = {index, updatedData};
         dispatch(DocActions.updateData(newData));
     }

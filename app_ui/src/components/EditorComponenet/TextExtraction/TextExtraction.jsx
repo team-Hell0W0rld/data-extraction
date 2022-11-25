@@ -5,7 +5,7 @@ import ReactCrop, { centerCrop, makeAspectCrop } from "react-image-crop";
 import { canvasPreview } from "./canvasPreview";
 import { useDebounceEffect } from "./useDebounceEffect";
 import { DocActions } from "../../../store/slices/selectedDoc";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styles from "./TextExtraction.module.css";
 
 import "react-image-crop/dist/ReactCrop.css";
@@ -31,6 +31,9 @@ export default function TextExtraction() {
   const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
+
+  const seletedIndex = useSelector(state => state.selectedDoc.seletedDataRow);
+  const seletedData = useSelector(state => state.selectedDoc.dataList[seletedIndex]);
 
   function onSelectFile(e) {
     if (e.target.files && e.target.files.length > 0) {
@@ -133,6 +136,29 @@ export default function TextExtraction() {
     setCoOrdinates(temp);
   };
 
+
+  const getOverlays = () => {
+    console.log("calling get overlays");
+    const overlays = [];
+
+    console.log(seletedData)
+
+    if(seletedData && seletedData.keyData.length != 0){
+      const tData = seletedData.keyData;
+      const nO = <Overlay x={tData.x} y={tData.y} height={tData.height} width={tData.width}/>
+      overlays.push(nO);
+    }
+
+    if(seletedData && seletedData.valueData){
+      const tData = seletedData.valueData;
+      const nO = <Overlay x={tData.x} y={tData.y} height={tData.height} width={tData.width}/>
+      overlays.push(nO);
+    }
+
+    console.log(overlays)
+    return overlays;
+  }
+
   return (
     <div className={styles.App}>
       <div className="Crop-Controls">
@@ -166,8 +192,7 @@ export default function TextExtraction() {
             src={imgSrc}
             style={{ transform: `scale(${scale})` }}
           />
-          <Overlay x={100} y={100} height={100} width={200}/>
-          <Overlay x={300} y={300} height={100} width={200}/>
+          {getOverlays()} 
         </ReactCrop>
       )}
       <div>

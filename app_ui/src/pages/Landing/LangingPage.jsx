@@ -2,10 +2,11 @@ import styles from './LandingPage.module.css'
 
 import LoginForm from './Forms/LoginForm/LoginForm'
 import SignupForm from './Forms/SignupForm/SignupFrom'
-import { Routes, Route, useLocation } from 'react-router-dom'
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom'
+import { Button } from '@mui/material'
 
 const LandingPage = () => {
-    let location = useLocation();
+    let navigate = useNavigate();
     return (
         <div className={styles.Container}>
             <div className={styles.Image}>
@@ -13,10 +14,8 @@ const LandingPage = () => {
                 <img src="/dataMachine.png" />
             </div>
             <div className={styles.Form}>
-                <Routes location={location}>
-                    <Route index element={<LoginForm></LoginForm>}></Route>
-                    <Route path="/signup" element={<SignupForm></SignupForm>}></Route>
-                </Routes>
+                <h2>Use Tool to extract the data in a unique way.</h2>
+                <Button variant="contained" onClick={() => navigate('/editor')}>Go Ahead</Button>
             </div>
         </div>
     )

@@ -13,8 +13,7 @@ const DataViewer = () => {
       {dataList.map((data, ind) => {
         return (
           <DataRow
-            title={data.title}
-            value={data.value}
+            data={dataList[ind]}
             key={ind}
             index={ind}
           />

@@ -8,7 +8,7 @@ const Overlay = ({x, y, height, width}) => {
         left: x+'px',
         height:height+'px',
         width:width+'px',
-        border: '3px solid black'
+        border: '3px solid red'
     };
 
     return (

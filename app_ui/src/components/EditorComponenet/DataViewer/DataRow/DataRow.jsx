@@ -4,11 +4,18 @@ import IconButton from "@mui/material/IconButton";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import KVEditor from "./KVEditor/KVEditor";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 
-const lrip =
-  "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
-const DataRow = ({ title, value, keyMetadata, valueMetadata, index }) => {
-  const [viewEdit, setViewEdit] = useState(true);
+import { DocActions } from "../../../../store/slices/selectedDoc";
+
+const DataRow = ({ data, index }) => {
+  const [viewEdit, setViewEdit] = useState(false);
+  const dispatch = useDispatch();
+
+  const updateSeletedIndex = () => {
+    dispatch(DocActions.updateSelectedDataRow(index));
+  }
+
   return (
     <div className={styles.DataRow}>
       <div className={styles.Main}>
@@ -19,8 +26,8 @@ const DataRow = ({ title, value, keyMetadata, valueMetadata, index }) => {
         >
           <RemoveRedEyeIcon />
         </IconButton>
-        <p className={styles.SampleData}>{title.substring()}</p>
-        <p className={styles.SampleData}>{value}</p>
+        <p className={styles.SampleData} onClick={updateSeletedIndex}>{data.title}</p>
+        <p className={styles.SampleData} onClick={updateSeletedIndex}>{data.value}</p>
       </div>
       {viewEdit && <KVEditor index={index} />}
     </div>

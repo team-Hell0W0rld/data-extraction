@@ -16,6 +16,7 @@
 
 .SampleData {
   flex: 1;
+  cursor: pointer;
   /* height: 100%;
     overflow: hidden; */
 }
