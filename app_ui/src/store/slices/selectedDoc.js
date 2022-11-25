@@ -21,8 +21,8 @@ export const docSlice = createSlice({
       const { index, updatedData } = action.payload;
       console.log(updatedData)
       state.dataList[index] = {
-        ...updatedData,
         ...state.dataList[index],
+        ...updatedData,
       };
     },
     deleteData: (state, action) => {

@@ -13,7 +13,10 @@ const TextArea = ({ value, css, onChange}) => {
   }, [vv]);
 
   return (
-    <textarea style={{padding:"10px", ...css}} ref={tRef} onChange={(e) => onChange(e.target.value)} value={value}></textarea>
+    <textarea style={{padding:"10px", ...css}} ref={tRef} onChange={(e) => {
+      console.log(e.target.value)
+      onChange(e.target.value)
+    }} value={value}></textarea>
   );
 };
 
