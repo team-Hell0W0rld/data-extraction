@@ -21,7 +21,9 @@ export default function TextExtraction() {
   const [completedCrop, setCompletedCrop] = useState();
   const [scale, setScale] = useState(1);
   // const [text, setText] = useState("");
-  let key, value, keyMetadata, valueMetadata;
+  const [key, setKey] = useState("");
+  const [keyMetadata, setKeyMetadata] = useState({});
+  let value, valueMetadata;
   const [coOrdinates, setCoOrdinates] = useState({});
 
   const dispatch = useDispatch();
@@ -78,10 +80,13 @@ export default function TextExtraction() {
 
   const addAsKey = () => {
     const cb = (text) => {
-      if (text) key = text;
+      // if (text) key = text;
+      setKey(text);
       console.log("key", key);
       // getPosition();
-      keyMetadata = JSON.parse(JSON.stringify(coOrdinates));
+      let keyMetadata = JSON.parse(JSON.stringify(coOrdinates));
+      console.log(keyMetadata);
+      setKeyMetadata(keyMetadata);
     };
     getCurrentText(cb);
   };
