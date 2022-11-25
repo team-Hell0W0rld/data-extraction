@@ -9,16 +9,21 @@ import { useDispatch } from "react-redux";
 
 import "react-image-crop/dist/ReactCrop.css";
 import { alertClasses } from "@mui/material";
+// import { get } from "immer/dist/internal";
 
 export default function TextExtraction() {
   const [imgSrc, setImgSrc] = useState("");
   const previewCanvasRef = useRef(null);
+  const parentImg = useRef(null);
+  const parentImgRef = useRef(null);
   const imgRef = useRef(null);
   const [crop, setCrop] = useState();
   const [completedCrop, setCompletedCrop] = useState();
   const [scale, setScale] = useState(1);
   // const [text, setText] = useState("");
-  let key, value;
+  let key, value, keyMetadata, valueMetadata;
+  // const [coOrdinates, setCoOrdinates] = useState({});
+  let coOrdinates;
 
   const dispatch = useDispatch();
 
@@ -54,28 +59,48 @@ export default function TextExtraction() {
     [completedCrop, scale]
   );
 
+  // const getPosition = () => {
+  //   // console.log(parentImgRef);
+  //   // console.log(imgRef.current.getBoundingClientRect());
+  //   // let parentPos = imgRef.current.getBoundingClientRect(),
+  //   //   // childPos = document
+  //   //   //   .getElementByClassName("ReactCrop__crop-selection")
+  //   //   //   .getBoundingClientRect(),
+  //   //   relativePos = {};
+
+  //   // relativePos.top = childPos.top - parentPos.top;
+  //   // relativePos.right = childPos.right - parentPos.right;
+  //   // relativePos.bottom = childPos.bottom - parentPos.bottom;
+  //   // relativePos.left = childPos.left - parentPos.left;
+
+  //   // console.log(relativePos);
+
+  // };
+
   const addAsKey = () => {
     const cb = (text) => {
-      // if (text)
-      console.log(text);
-      key = text;
-      console.log("text", key);
+      if (text) key = text;
+      console.log("key", key);
+      // getPosition();
+      keyMetadata = JSON.parse(JSON.stringify(coOrdinates));
     };
-
     getCurrentText(cb);
-
-    // if (text) key = text;
   };
 
   const addAsValue = () => {
     const cb = (text) => {
       if (text) value = text;
       console.log("value", value);
+      console.log(coOrdinates);
+      valueMetadata = JSON.parse(JSON.stringify(coOrdinates));
+      console.log(coOrdinates);
+      console.log(valueMetadata);
     };
     getCurrentText(cb);
   };
 
   const getCurrentText = (cb) => {
+    console.log(previewCanvasRef);
     let can = previewCanvasRef.current;
     let ctx = can.getContext("2d");
 
@@ -87,10 +112,10 @@ export default function TextExtraction() {
       cb();
       return;
     }
-    console.log(img);
-    Tesseract.recognize(img.src, "eng", {
-      logger: (m) => console.log(m),
-    });
+    // console.log(img);
+    // Tesseract.recognize(img.src, "eng", {
+    //   logger: (m) => console.log(m),
+    // });
     Tesseract.recognize(img, "eng")
       .catch((err) => {
         console.error(err);
@@ -104,14 +129,27 @@ export default function TextExtraction() {
       });
   };
 
-  const handleClick = () => {
+  const handleSave = () => {
     console.log(key, value);
     if (!value) {
       alert("Please select the value");
       return;
     }
-    const newData = { title: key, value: value };
+    const newData = { title: key, value: value, keyMetadata, valueMetadata };
+    console.log(newData);
     dispatch(DocActions.addData(newData));
+  };
+
+  const fillCoOrdinates = (c) => {
+    coOrdinates = {
+      x: c.x,
+      y: c.y,
+      height: c.height,
+      width: c.width,
+    };
+    // console.log(coOrdinates);
+    // setCoOrdinates(coOrdinates);
+    console.log(coOrdinates);
   };
 
   return (
@@ -132,9 +170,14 @@ export default function TextExtraction() {
       </div>
       {!!imgSrc && (
         <ReactCrop
+          ref={parentImgRef}
           crop={crop}
           onChange={(_, percentCrop) => setCrop(percentCrop)}
-          onComplete={(c) => setCompletedCrop(c)}
+          onComplete={(c) => {
+            fillCoOrdinates(c);
+
+            setCompletedCrop(c);
+          }}
         >
           <img
             alt="Crop me"
@@ -164,7 +207,7 @@ export default function TextExtraction() {
           {" "}
           add as Value
         </button>
-        <button onClick={handleClick} style={{ height: 50 }}>
+        <button onClick={handleSave} style={{ height: 50 }}>
           {" "}
           Save to DB
         </button>
