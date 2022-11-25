@@ -68,11 +68,11 @@ const Dashboard = () => {
             </Modal>
             
             <div className={styles.documents}>
-                {/* {
-                    user.documents.map(el => {
+                {
+                    user.document?user.documents.map(el => {
                         return <Document image={"image"} text={el.name}></Document>
-                    })
-                } */}
+                    }):null
+                }
                 <Document image={"image"} text="Add new document." handleClick={e => displayModal(true)}></Document>
             </div>
         </div>
