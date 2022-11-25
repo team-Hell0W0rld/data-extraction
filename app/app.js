@@ -9,5 +9,6 @@ app.use(cors({origin:"*"}));
 app.use(express.json());
 
 app.use("/api/users", userRouter);
+// app.use("/util", require('./routes/utilRoutes'));
 
 module.exports = app;
