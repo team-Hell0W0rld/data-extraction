@@ -28,7 +28,7 @@ const LoginForm = () => {
         <InputBox type="password" placeholder="Enter your password" onChange={changePassword}></InputBox>
         <Button text="Log in" onClick={login}></Button>
         <p style={{fontSize:"0.8em", display:"inline"}}>Don't have an account?</p>
-        <button className={styles.signup} style={{border:"none", display:"inline"}} onClick={() => navigate("landing/signup")}>Sign up</button>
+        <button className={styles.signup} style={{border:"none", display:"inline"}} onClick={() => navigate("/signup")}>Sign up</button>
     </div>
     )
 }

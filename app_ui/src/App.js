@@ -7,10 +7,9 @@ import Editor from "./pages/Editor/Editor";
 function App() {
   return (
     <Routes>
-      <Route index element={<LandingPage></LandingPage>}></Route>
-      <Route path="/landing/*" element={<LandingPage></LandingPage>}></Route>
       <Route path="/dashboard" element={<DashBoard></DashBoard>}></Route>
       <Route path="/editor" element={<Editor />} />
+      <Route path="/*" element={<LandingPage/>}></Route>
     </Routes>
   );
 }

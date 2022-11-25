@@ -19,7 +19,7 @@ const DataRow = ({ title, value, keyMetadata, valueMetadata, index }) => {
         >
           <RemoveRedEyeIcon />
         </IconButton>
-        <p className={styles.SampleData}>{title}</p>
+        <p className={styles.SampleData}>{title.substring()}</p>
         <p className={styles.SampleData}>{value}</p>
       </div>
       {viewEdit && <KVEditor index={index} />}

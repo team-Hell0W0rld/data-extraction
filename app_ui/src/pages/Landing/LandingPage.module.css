@@ -7,8 +7,15 @@
 .Image{
     width: 60%;
     height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
+.Image h1{
+    font-size: 50px;
+}
 .Form{
     width: 40%;
     display: flex;

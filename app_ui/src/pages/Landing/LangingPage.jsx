@@ -8,15 +8,16 @@ const LandingPage = () => {
     let location = useLocation();
     return (
         <div className={styles.Container}>
-            <div className={styles.Image}></div>
+            <div className={styles.Image}>
+                <h1>The Data Machine</h1>
+                <img src="/dataMachine.png" />
+            </div>
             <div className={styles.Form}>
                 <Routes location={location}>
                     <Route index element={<LoginForm></LoginForm>}></Route>
                     <Route path="/signup" element={<SignupForm></SignupForm>}></Route>
                 </Routes>
-                
             </div>
-
         </div>
     )
 }

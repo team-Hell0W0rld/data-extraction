@@ -97,7 +97,7 @@ const Dashboard = () => {
       <Modal modal={modal} hideModal={() => displayModal(false)}>
         <div className={styles.modal}>
           <div style={{ display: "flex" }}>
-            <InputBox></InputBox>
+            <InputBox placeholder={"Enter Doc Name"}></InputBox>
           </div>
           <DropZone addFiles={addFile}></DropZone>
           <div style={{ display: "flex" }}>

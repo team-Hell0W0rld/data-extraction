@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 
 import "react-image-crop/dist/ReactCrop.css";
 import { alertClasses } from "@mui/material";
+import Overlay from "../ImageEditor/Overlay/Overlay";
 // import { get } from "immer/dist/internal";
 
 export default function TextExtraction() {
@@ -183,6 +184,8 @@ export default function TextExtraction() {
             src={imgSrc}
             style={{ transform: `scale(${scale})` }}
           />
+          <Overlay x={100} y={100} height={100} width={200}/>
+          <Overlay x={300} y={300} height={100} width={200}/>
         </ReactCrop>
       )}
       <div>

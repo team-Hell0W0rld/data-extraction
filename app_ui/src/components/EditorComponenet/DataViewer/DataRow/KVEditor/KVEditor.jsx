@@ -23,8 +23,10 @@ const KVEditor = ({index}) => {
                 <TextArea value={data.value} css={{'flex':1}} onChange={(val) => updateData(data.title, val)}/>
             </div>
             <div className={styles.Footer}>
-                <Button variant="contained">Save</Button>
-                <Button variant="contained" color="error" style={{marginLeft:"10px"}}>Delete</Button>
+                {/* <Button variant="contained">Save</Button> */}
+                <Button variant="contained" color="error" style={{marginLeft:"10px"}} onClick={() => {
+                    dispatch(DocActions.deleteData({index}))
+                }}>Delete</Button>
             </div>
         </div>
     )

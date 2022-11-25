@@ -9,7 +9,10 @@ exports.getUser = async (req, res, next) => {
 };
 
 exports.addDocument = async(req, res, next) => {
+  console.log(req.body);
+
   const {images, docName} = req.body;
+
 
   const pageRefs = [];
   for(let i=0; i<images.length; i++){
@@ -24,10 +27,10 @@ exports.addDocument = async(req, res, next) => {
     pages: pageRefs,
   })
 
-  const User = req.user;
+  // const User = req.user;
 
-  User.documents.push(newDoc);
-  await User.save({runValidationBeforeSave: false});
+  // User.documents.push(newDoc);
+  // await User.save({runValidationBeforeSave: false});
 
   res.status(200).json({message:"Document successfully added"});
 }
