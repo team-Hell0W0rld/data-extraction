@@ -22,8 +22,7 @@ export default function TextExtraction() {
   const [scale, setScale] = useState(1);
   // const [text, setText] = useState("");
   let key, value, keyMetadata, valueMetadata;
-  // const [coOrdinates, setCoOrdinates] = useState({});
-  let coOrdinates;
+  const [coOrdinates, setCoOrdinates] = useState({});
 
   const dispatch = useDispatch();
 
@@ -141,15 +140,14 @@ export default function TextExtraction() {
   };
 
   const fillCoOrdinates = (c) => {
-    coOrdinates = {
+    const temp = {
       x: c.x,
       y: c.y,
       height: c.height,
       width: c.width,
     };
-    // console.log(coOrdinates);
-    // setCoOrdinates(coOrdinates);
-    console.log(coOrdinates);
+    console.log(temp);
+    setCoOrdinates(temp);
   };
 
   return (
