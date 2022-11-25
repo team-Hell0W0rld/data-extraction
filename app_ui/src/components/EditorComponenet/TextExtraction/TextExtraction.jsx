@@ -6,24 +6,29 @@ import { canvasPreview } from "./canvasPreview";
 import { useDebounceEffect } from "./useDebounceEffect";
 import { DocActions } from "../../../store/slices/selectedDoc";
 import { useDispatch } from "react-redux";
+import styles from "./TextExtraction.module.css";
 
 import "react-image-crop/dist/ReactCrop.css";
 import { alertClasses } from "@mui/material";
 import Overlay from "../ImageEditor/Overlay/Overlay";
 // import { get } from "immer/dist/internal";
+import { Input } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 
 export default function TextExtraction() {
   const [imgSrc, setImgSrc] = useState("");
   const previewCanvasRef = useRef(null);
-  const parentImg = useRef(null);
   const parentImgRef = useRef(null);
   const imgRef = useRef(null);
   const [crop, setCrop] = useState();
   const [completedCrop, setCompletedCrop] = useState();
   const [scale, setScale] = useState(1);
-  // const [text, setText] = useState("");
-  let key, value, keyMetadata, valueMetadata;
+  const [key, setKey] = useState("");
+  const [keyMetadata, setKeyMetadata] = useState({});
+  const [value, setValue] = useState("");
+  const [valueMetadata, setValueMetedata] = useState({});
   const [coOrdinates, setCoOrdinates] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -59,63 +64,41 @@ export default function TextExtraction() {
     [completedCrop, scale]
   );
 
-  // const getPosition = () => {
-  //   // console.log(parentImgRef);
-  //   // console.log(imgRef.current.getBoundingClientRect());
-  //   // let parentPos = imgRef.current.getBoundingClientRect(),
-  //   //   // childPos = document
-  //   //   //   .getElementByClassName("ReactCrop__crop-selection")
-  //   //   //   .getBoundingClientRect(),
-  //   //   relativePos = {};
-
-  //   // relativePos.top = childPos.top - parentPos.top;
-  //   // relativePos.right = childPos.right - parentPos.right;
-  //   // relativePos.bottom = childPos.bottom - parentPos.bottom;
-  //   // relativePos.left = childPos.left - parentPos.left;
-
-  //   // console.log(relativePos);
-
-  // };
-
   const addAsKey = () => {
+    setLoading(true);
     const cb = (text) => {
-      if (text) key = text;
-      console.log("key", key);
-      // getPosition();
-      keyMetadata = JSON.parse(JSON.stringify(coOrdinates));
+      setKey(text);
+      let keyMetadata = JSON.parse(JSON.stringify(coOrdinates));
+      setKeyMetadata(keyMetadata);
+      setLoading(false);
     };
     getCurrentText(cb);
   };
 
   const addAsValue = () => {
+    setLoading(true);
     const cb = (text) => {
-      if (text) value = text;
+      setValue(text);
       console.log("value", value);
-      console.log(coOrdinates);
-      valueMetadata = JSON.parse(JSON.stringify(coOrdinates));
-      console.log(coOrdinates);
-      console.log(valueMetadata);
+      let valueMetadata = JSON.parse(JSON.stringify(coOrdinates));
+      setValueMetedata(valueMetadata);
+      setLoading(false);
     };
     getCurrentText(cb);
   };
 
   const getCurrentText = (cb) => {
-    console.log(previewCanvasRef);
-    let can = previewCanvasRef.current;
-    let ctx = can.getContext("2d");
-
-    ctx.fillRect(50, 50, 50, 50);
-
-    var img = new Image();
-    img.src = can.toDataURL();
     if (!completedCrop) {
       cb();
       return;
     }
-    // console.log(img);
-    // Tesseract.recognize(img.src, "eng", {
-    //   logger: (m) => console.log(m),
-    // });
+    console.log(previewCanvasRef);
+    let can = previewCanvasRef.current;
+    let ctx = can.getContext("2d");
+    ctx.fillRect(50, 50, 50, 50);
+
+    var img = new Image();
+    img.src = can.toDataURL();
     Tesseract.recognize(img, "eng")
       .catch((err) => {
         console.error(err);
@@ -124,7 +107,6 @@ export default function TextExtraction() {
         console.log(result);
         let newText = result.data.text;
         console.log(newText);
-        // setText(newText);
         cb(newText);
       });
   };
@@ -152,9 +134,9 @@ export default function TextExtraction() {
   };
 
   return (
-    <div className="App">
+    <div className={styles.App}>
       <div className="Crop-Controls">
-        <input type="file" accept="image/*" onChange={onSelectFile} />
+        <Input type="file" accept="image/*" onChange={onSelectFile} />
         <div>
           <label htmlFor="scale-input">Scale: </label>
           <input
@@ -200,18 +182,33 @@ export default function TextExtraction() {
             }}
           />
         )}
-        <button onClick={addAsKey} style={{ height: 50 }}>
-          {" "}
-          add as Key
-        </button>
-        <button onClick={addAsValue} style={{ height: 50 }}>
-          {" "}
-          add as Value
-        </button>
-        <button onClick={handleSave} style={{ height: 50 }}>
-          {" "}
-          Save to DB
-        </button>
+        <br />
+        <div className={styles.buttonBox}>
+          <LoadingButton
+            loading={loading}
+            onClick={addAsKey}
+            variant="contained"
+            color="primary"
+          >
+            add as Key
+          </LoadingButton>
+          <LoadingButton
+            loading={loading}
+            onClick={addAsValue}
+            variant="contained"
+            color="primary"
+          >
+            add as Value
+          </LoadingButton>
+          <LoadingButton
+            loading={loading}
+            onClick={handleSave}
+            variant="contained"
+            color="success"
+          >
+            Save to DB
+          </LoadingButton>
+        </div>
       </div>
     </div>
   );
